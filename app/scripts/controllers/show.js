@@ -1,8 +1,7 @@
 'use strict';
 
 angular.module('peerflixServerApp')
-  .controller('RechercheCtrl', function ($scope,$location, $resource, $log, $q, $upload, torrentSocket) {
-    //var Torrent = $resource('/rechercher/');
+  .controller('ShowCtrl', function ($scope, $routeParams, $resource, $log, $q, $upload, torrentSocket) {
 
     var search = $resource('/searchSerie/:query',{},{'List':{ method: 'GET',
                                                               isArray: true
@@ -10,48 +9,41 @@ angular.module('peerflixServerApp')
                           );
 
     var searchEpisodes = $resource('/serie/:query');
+    if(!$scope.episodes){
+      initEpisodes();
+    }
 
+    function initEpisodes(){
+      $scope.filtreEpisode={};
+      $scope.episodes = [];
 
-
-    $scope.rechercher = function () {
-      var elementARechercher =  $scope.elementRecherche;
-      console.log("rechercher : " + elementARechercher);
-
-      $scope.series = [];
       $scope.loading =true;
-      return search.List({ query: elementARechercher }).$promise.then(function (reponseResultats) {
-        //search.list
-        console.debug(reponseResultats);
-        angular.forEach(reponseResultats, function(value, key) {
-          //console.debug(value);
+
+      searchEpisodes.get({ query:  $routeParams.id }).$promise.then(function (result) {
+      angular.forEach(result.episodes, function(value, key) {
+
+          $scope.episodes.unshift(value);
+
           $scope.loading =false;
-          $scope.series.unshift(value);
+
         });
-        //$scope.series.unshift(reponseResultats);
 
       });
+    }
+
+
+
+
+
+    function getInfoSerie(){
+      //imdbid
+    }
+
+    $scope.selectionSaison = function (saison) {
+      console.log("selection saison :" + saison);
+      $scope.filtreEpisode.seasonNumber=saison;
 
     };
-
-
-
-    $scope.selectionSerie = function (serie) {
-
-      console.log("selection episodes de serie :" + serie.title);
-      var elementARechercher =  serie.title;
-      $scope.series = [];
-      $scope.loading =true;
-      return search.List({ query: elementARechercher }).$promise.then(function (reponseResultats) {
-        $scope.loading =false;
-        var serie = reponseResultats[0];
-        console.log("id de la serie : " + serie.id);
-
-        console.log("redirection sur /show/" + serie.id);
-        $location.path("/show/" + serie.id);
-      });
-
-    };
-    
 
     $scope.selectionEpisode = function (episode) {
       console.log("selection serie :" + episode.title);
@@ -60,9 +52,11 @@ angular.module('peerflixServerApp')
       var Torrent = $resource('/torrents/:infoHash');
 
       if (episode.magnet) {
+        $scope.loading = true;
         Torrent.save({ link: episode.magnet}).$promise.then(function (torrent) {
           //loadTorrent(torrent.infoHash);
-          console.debug("Episode ajoutÃ© !")
+          console.debug("Episode ajouté !")
+          $scope.loading = false;
 
         });
 
@@ -71,20 +65,6 @@ angular.module('peerflixServerApp')
 
     }
 
-    $scope.filtreEpisode={};
-
-    $scope.selectionSaison = function (saison) {
-      console.log("selection saison :" + saison);
-      $scope.filtreEpisode.seasonNumber=saison;
-
-    };
-
-/*    $scope.order = function(predicate, reverse) {
-      $scope.episodes = orderBy($scope.episodes, predicate, reverse);
-    };
-
-    $scope.order('-episodeNumber',false);
-*/
 
   }).filter('groupBy', ['$parse', function ($parse) {
     return function (list, group_by) {

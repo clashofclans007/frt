@@ -9,6 +9,7 @@ module.exports = function (req, res, torrent, file) {
   var param = req.query.ffmpeg;
   console.log(req);
   function probe() {
+    console.log("probe");
     var filePath = path.join(torrent.path, file.path);
     fs.exists(filePath, function (exists) {
       if (!exists) {
@@ -25,6 +26,7 @@ module.exports = function (req, res, torrent, file) {
   }
 
   function remux() {
+    console.log("remux");
     res.type('video/mp4');
     var command = ffmpeg(file.createReadStream())
       .videoCodec('copy').audioCodec('aac').format('mp4')

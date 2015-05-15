@@ -7,11 +7,12 @@ var rangeParser = require('range-parser'),
   multipart = require('connect-multiparty'),
   fs = require('fs'),
   path = require('path'),
+  request = require('request'),
+
   ffmpeg = require('./ffmpeg'),
   store = require('./store'),
   progress = require('./progressbar'),
   stats = require('./stats'),
-
 
   api = express();
 
@@ -19,6 +20,8 @@ api.use(express.json());
 api.use(express.logger('dev'));
 
 var eztv = require('eztv');
+var util = require('util');
+
 
 function serialize(torrent) {
   if (!torrent.torrent) {
@@ -35,6 +38,66 @@ function serialize(torrent) {
 }
 
 
+api.get('/subs/:file',function(req,res){
+  var subsfile;
+  if( req.params.file){
+    subsfile=req.params.file;
+  }
+  console.log(" Getting subs for :" + subsfile);
+
+  var resultat = "srt";
+
+  res.send(resultat);
+
+
+});
+
+api.get('/discover/:page',function(req,res){
+  var page = 1;
+  if( req.params.page){
+    page = req.params.page;
+  }
+  console.log("appel : http://eztvapi.re/shows/" + page );
+
+  //appel api 
+  request("http://eztvapi.re/shows/"+page, function (error, response, body) {
+
+   if (!error && response.statusCode == 200){
+      var resultat ={};
+      var listSeries = [];
+      var json = JSON.parse(body);
+
+      console.log("json length" + json.length);
+
+      for(var i= 0; i < json.length; i++)
+      {
+        var e = json[i];
+        console.log(e);
+        //convertisseur
+        /*var serie = {};
+
+        serie.title = e.title;
+        serie.image = e.images.poster
+         */
+        listSeries.push(e);
+      }
+
+      resultat.series = listSeries;
+      //console.log("Resultat :" + list);
+      res.send(resultat);
+    }
+    else{
+      console.log("Erreur :" + resultat);
+
+      res.status(500).send({ error: 'Something blew up!' });
+    }
+
+
+
+ });
+
+
+});
 
 api.get('/searchSerie/:querystr', function(req, res) {
 
@@ -57,6 +120,7 @@ api.get('/searchSerie/:querystr', function(req, res) {
   });
 
 });
+
 api.get('/serie/:id', function(req, res) {
 
   var id = req.params.id;
@@ -77,7 +141,6 @@ api.get('/serie/:id', function(req, res) {
   });
 
 });
-
 
 api.get('/torrents', function (req, res) {
   res.send(store.list().map(serialize));
@@ -187,8 +250,11 @@ api.all('/torrents/:infoHash/files/:path([^"]+)', function (req, res) {
     return res.end();
   }
 
-  console.log("Pumping range :" + range);
-  console.log("file  :" + file);
+  console.log("Pumping range :" +  util.inspect(range, false, null));
+
+  console.log("file : " + util.inspect(file, false, null));
+
+
 
 
   //evoie de la video en streaming sur le navigateur

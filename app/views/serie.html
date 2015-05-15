@@ -1,0 +1,45 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+    <li ><a href="/">Torrents</a></li>
+    <li ><a href="#/recherche">recherche</a></li>
+    <li class="active"><a href="#/browse">browse</a></li>
+
+  </ul>
+  <h3 class="text-muted text-nowrap"><img src="images/logo.svg" alt="logo" height="40"> peerflix server</h3>
+</div>
+
+<div ng-if="loading"  ng-controller="RechercheCtrl">
+  <img alt="activity indicator" src="images/loading.gif">
+</div>
+<div ng-if="episodes.length" class="row">
+  <div class="saisons col-md-2">
+    <p>Saisons : </p>
+    <span  class="list-group-item btn btn-default" ng-repeat="episode in episodes  | orderBy:'seasonNumber' | groupBy:['seasonNumber']"
+      ng-show="episode.group_by_CHANGED" ng-click="selectionSaison(episode.seasonNumber)">
+        {{episode.seasonNumber}}
+
+    </span>
+  </div>
+
+  <div class="episodes col-md-10">
+
+    <p>Episodes : </p>
+    <span  ng-repeat="episode in episodes | filter:filtreEpisode | orderBy:['seasonNumber', 'episodeNumber']">
+
+      <div class="row" ng-if="episode.magnet">
+
+        <!--<span >-->
+        <a href="#/" class="col-md-10  list-group-item" ng-click="selectionEpisode(episode)">
+            {{episode.seasonNumber}}x{{episode.episodeNumber}} : {{episode.title}}
+        </a>
+
+        <span >
+        <a class=" list-group-item col-md-1" href={{episode.magnet}} role="button">
+          <span class="glyphicon glyphicon-magnet" aria-hidden="true"></span>
+        </a>
+      </span>
+      </div>
+
+    </span>
+  </div>
+</div>

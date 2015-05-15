@@ -4,6 +4,22 @@ body {
   padding-bottom: 20px;
 }
 
+.series{
+
+}
+
+.serie{
+
+
+}
+.cover{
+  height: 220px;
+  width: 150px;
+  cursor: pointer;
+	opacity: 1;
+
+}
+
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .content,

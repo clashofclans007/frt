@@ -1,0 +1,48 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+    <li ><a href="/">Torrents</a></li>
+    <li ><a href="#/recherche">recherche</a></li>
+    <li class="active"><a href="#/browse">browse</a></li>
+
+  </ul>
+  <h3 class="text-muted text-nowrap"><img src="images/logo.svg" alt="logo" height="40"> peerflix server</h3>
+</div>
+
+  <div ng-if="loading">
+    <img alt="activity indicator" src="images/loading.gif">
+  </div>
+
+  <div ng-if="series.length" class="series row " >
+
+    <span ng-if="!firstPage" class="btn" ng-click="getPreviousPage()">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true">next</span>
+    </span>
+
+    <span class="btn" ng-click="getNextPage()">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true">next</span>
+    </span>
+  </div>
+
+  <div ng-if="series.length" class="series row " >
+
+    <div class="serie  col-xs-6 col-sm-4 col-md-4  col-lg-3" ng-repeat="serie in series">
+      <a  ng-click="rechercheEpisodesDeSerie(serie)">
+        <img class="cover center-block img-thumbnail"  ng-src="{{serie.images.poster}}">
+        <p>{{serie.title}}</p>
+      </a>
+    </div>
+
+  </div>
+
+
+
+  <div ng-if="series.length" class="series row " >
+
+    <span ng-if="!firstPage" class="btn" ng-click="getPreviousPage()">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true">next</span>
+    </span>
+
+    <span class="btn" ng-click="getNextPage()">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true">next</span>
+    </span>
+  </div>

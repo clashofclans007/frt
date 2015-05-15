@@ -10,7 +10,10 @@ angular
     'rt.encodeuri',
     'angularFileUpload'
   ])
-  .config(function ($routeProvider) {
+  .config(['$routeProvider', '$compileProvider', function ($routeProvider,$compileProvider) {
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|magnet|mailto|chrome-extension):/);
+
+
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
@@ -20,10 +23,26 @@ angular
         templateUrl: 'views/recherche.html',
         controller: 'RechercheCtrl'
       })
+      .when('/browse', {
+        templateUrl: 'views/browse.html',
+        controller: 'BrowseCtrl'
+      })
+      .when('/show/:id',{
+        templateUrl :'views/serie.html',
+        controller : 'ShowCtrl'
+      })
+      .when('/player/:infoHash/files/:path',{
+        templateUrl :'views/player.html',
+        controller : 'playerCtrl'
+      })
+      .when('/player',{
+        templateUrl :'views/player.html',
+        controller : 'playerCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
-  })
+  }])
   .run(function () {
     window.addEventListener('dragover', function(e) {
       e.preventDefault();

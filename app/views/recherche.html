@@ -2,6 +2,8 @@
   <ul class="nav nav-pills pull-right">
     <li class="active"><a href="/">Torrents</a></li>
     <li class="active"><a href="#/recherche">recherche</a></li>
+    <li class="active"><a href="#/browse">browse</a></li>
+
     <li>
       <a href="https://github.com/asapach/peerflix-server" target="_blank">
         <i class="fa fa-github"></i> About</a>
@@ -42,10 +44,11 @@
     <h1>Saisons : </h1>
     <nav >
       <ul class="pagination pagination-lg" ng-repeat="episode in episodes  | orderBy:'seasonNumber' | groupBy:['seasonNumber']">
-          <li ng-show="episode.group_by_CHANGED" ><a href="#/recherche" ng-click="selectionSaison(episode.seasonNumber)">{{episode.seasonNumber}}</a>
+          <li ng-show="episode.group_by_CHANGED" >
+            <a href="#/recherche" ng-click="selectionSaison(episode.seasonNumber)">{{episode.seasonNumber}}</a>
           </li>
       </ul>
-      <li><a href="#/recherche" ng-click="selectionSaison(episode.seasonNumber)">{{episode.seasonNumber}}</a>
+
       </li>
     </nav>
 
