@@ -1,9 +1,9 @@
 <div class="header">
   <ul class="nav nav-pills pull-right">
     <li class="active"><a href="">Torrents</a></li>
-    <li class="active"><a href="#/recherche">recherche</a></li>
-    <li class="active"><a href="#/browse">browse</a></li>
-    
+    <li ><a href="#/recherche">recherche</a></li>
+    <li ><a href="#/browse">browse</a></li>
+
     <li>
       <a href="https://github.com/asapach/peerflix-server" target="_blank">
         <i class="fa fa-github"></i> About</a>
@@ -61,6 +61,14 @@
           <a href="/torrents/{{ torrent.infoHash }}/files/{{ file.path | encodeUri }}" target="_blank">
             {{ file.name }} ({{ file.length / 1024 / 1024 | number:1 }} MB)
           </a>
+
+          <br>
+          <a ng-if="isMp4(file.path )" href="#/player/?hash={{ torrent.infoHash }}&file={{ file.path | encodeUri }}" target="_blank">
+            <span class="  glyphicon glyphicon-film"></span>
+            via embedded player
+          </a>
+
+
         </li>
       </ul>
     </div>

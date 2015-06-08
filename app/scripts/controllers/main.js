@@ -3,12 +3,15 @@
 angular.module('peerflixServerApp')
   .controller('MainCtrl', function ($scope, $resource, $log, $q, $upload, torrentSocket) {
     var Torrent = $resource('/torrents/:infoHash');
+    var Subs = $resource('/subs/:file');
 
     function load() {
       var torrents = Torrent.query(function () {
         $scope.torrents = torrents;
       });
+
     }
+
 
     function loadTorrent(hash) {
       return Torrent.get({ infoHash: hash }).$promise.then(function (torrent) {
@@ -53,6 +56,7 @@ angular.module('peerflixServerApp')
       $upload.upload({
         url: '/upload',
         file: file
+
       }).then(function (response) {
         loadTorrent(response.data.infoHash);
       });
@@ -69,6 +73,19 @@ angular.module('peerflixServerApp')
     $scope.remove = function (torrent) {
       Torrent.remove({ infoHash: torrent.infoHash });
       _.remove($scope.torrents, torrent);
+    };
+
+    $scope.isMp4 = function(file){
+      var ismp4 = false;
+      if(file){
+        var strs =  file.split(".");
+        var ext = strs[strs.length-1];
+        if(file && ext == "mp4"){
+          ismp4=true;
+        }
+      }
+
+      return ismp4;
     };
 
     torrentSocket.on('verifying', function (hash) {

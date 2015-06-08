@@ -1,10 +1,31 @@
-<html>
-  <title>Welcome</title>
-    <body>
-      <video controls>
-        <source src="torrents/0a51ade330d37f1b82787d08b86d221677d7b02e/files/Marvels.Daredevil.S01E05.WEBRip.x264-2HD.mp4"
-         type="video/mp4"/>
-         <track src="srt/app.srt" kind="subtitle" srclang="en-US" label="French" />
+
+    <div  ng-controller="playerCtrl">
+
+    <!--  <video id="videoplayer" controls>
+        <source src="{{torrentURL}}" type="video/mp4">
+        Your browser does not support the video tag.
+
+        </source>
       </video>
-  </body>
-</html>
+-->
+      <div>
+        <input type="file" ng-model-instant id="uploadSrt" onchange="angular.element(this).scope().selectSubs(this)" />
+
+      </div>
+
+
+    <video id="videoplayer" class="video-js vjs-default-skin vjs-big-play-centered"
+      controls preload="auto" width="640" height="264"
+      poster="http://video-js.zencoder.com/oceans-clip.png"
+      data-setup='{"example_option":true}'>
+     <source src="{{torrentURL}}"
+             type='video/mp4' />
+             <track kind="subtitles" src="./subs/A.vtt" srclang="en" label="english"></track>
+
+
+
+     <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that
+        <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+   </video>
+   
+  </div>

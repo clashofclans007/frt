@@ -13,14 +13,26 @@ var rangeParser = require('range-parser'),
   store = require('./store'),
   progress = require('./progressbar'),
   stats = require('./stats'),
+  srt2vtt = require('srt2vtt'),
+  multer  = require('multer'),
+
 
   api = express();
 
 api.use(express.json());
 api.use(express.logger('dev'));
+api.use(multer(
+    { dest: './subs/',
+      rename: function(fieldname, filename) {
+      return filename;
+
+      }
+    }
+));
 
 var eztv = require('eztv');
 var util = require('util');
+
 
 
 function serialize(torrent) {
@@ -38,18 +50,49 @@ function serialize(torrent) {
 }
 
 
+api.post('/subs',
+//multipart(),
+ function (req, res) {
+  var file = req.files && req.files.file;
+  console.log(req.files);
+  console.log(path.extname(file.path));
+  if (!file || !path.extname(file.path) =="srt") {
+    return res.send(500, 'file is missing');
+  }
+  //todo enregistrement du fichier srt
+  console.log(  "Enregistrement du soustitre file : "+file.path);
+  res.send(200);
+  res.set({ 'content-type': 'application/json; charset=utf-8' });
+  res.end();
+
+});
+
+
+
 api.get('/subs/:file',function(req,res){
+
   var subsfile;
   if( req.params.file){
     subsfile=req.params.file;
+    //console.log("file  : " + subsfile);
+    var filePath = path.join("subs",subsfile);
+
+    //console.log("filepath : "+ filePath);
+    //var srtsyncData = fs.readSync(filePath);
+    res.writeHead(200, {'Content-Type': 'text/vtt'});
+
+    var srtData = fs.readFile(filePath, function (err, srtdata) {
+      if (err) throw err;
+
+      srt2vtt(srtdata, function(err, vttData) {
+        if (err) throw new Error(err);
+
+         res.write(vttData);
+         res.end();
+      });
+
+    });
   }
-  console.log(" Getting subs for :" + subsfile);
-
-  var resultat = "srt";
-
-  res.send(resultat);
-
-
 });
 
 api.get('/discover/:page',function(req,res){
@@ -59,7 +102,7 @@ api.get('/discover/:page',function(req,res){
   }
   console.log("appel : http://eztvapi.re/shows/" + page );
 
-  //appel api 
+  //appel api
   request("http://eztvapi.re/shows/"+page, function (error, response, body) {
 
    if (!error && response.statusCode == 200){
@@ -110,7 +153,7 @@ api.get('/searchSerie/:querystr', function(req, res) {
     if(error){
       console.log("Erreur : " + error);
     }
-    //console.log("Resultats :" + results);
+    console.log("Resultats :" + results);
 
     res.send(results);
 
@@ -128,11 +171,12 @@ api.get('/serie/:id', function(req, res) {
 
   eztv.getShowEpisodes(id, function(error, results) {
 
+
     if(error){
       console.log("Erreur : " + error);
     }
     console.log("Resultats :" + results);
-
+    results.addicted_url ="http://www.addic7ed.com/serie/"+results.title.replace(" ","_");
     res.send(results);
 
     //res.send(results);

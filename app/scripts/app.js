@@ -31,10 +31,7 @@ angular
         templateUrl :'views/serie.html',
         controller : 'ShowCtrl'
       })
-      .when('/player/:infoHash/files/:path',{
-        templateUrl :'views/player.html',
-        controller : 'playerCtrl'
-      })
+      //.when('/player/:infoHash/files/:path',{
       .when('/player',{
         templateUrl :'views/player.html',
         controller : 'playerCtrl'

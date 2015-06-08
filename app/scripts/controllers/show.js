@@ -14,20 +14,13 @@ angular.module('peerflixServerApp')
     }
 
     function initEpisodes(){
-      $scope.filtreEpisode={};
-      $scope.episodes = [];
 
+      $scope.filtreEpisode={};
       $scope.loading =true;
 
       searchEpisodes.get({ query:  $routeParams.id }).$promise.then(function (result) {
-      angular.forEach(result.episodes, function(value, key) {
-
-          $scope.episodes.unshift(value);
-
-          $scope.loading =false;
-
-        });
-
+        $scope.serie=result;
+        $scope.loading =false;
       });
     }
 

@@ -2,8 +2,11 @@
   <ul class="nav nav-pills pull-right">
     <li ><a href="/">Torrents</a></li>
     <li ><a href="#/recherche">recherche</a></li>
-    <li class="active"><a href="#/browse">browse</a></li>
-
+    <li class=""><a href="#/browse">browse</a></li>
+    <li>
+      <a href="https://github.com/asapach/peerflix-server" target="_blank">
+        <i class="fa fa-github"></i> About</a>
+    </li>
   </ul>
   <h3 class="text-muted text-nowrap"><img src="images/logo.svg" alt="logo" height="40"> peerflix server</h3>
 </div>
@@ -11,32 +14,51 @@
 <div ng-if="loading"  ng-controller="RechercheCtrl">
   <img alt="activity indicator" src="images/loading.gif">
 </div>
-<div ng-if="episodes.length" class="row">
-  <div class="saisons col-md-2">
+<div ng-if="serie.episodes.length" class="row">
+
+  <div class="col-md-10 col-md-offset-2">
+    <h1>{{serie.title}}</h1>
+    <img src="http:{{serie.banner}}" style="width : 100%" align="middle" class="img-responsive" alt="{{serie.title}}">
+  </div>
+</div>
+
+<div ng-if="serie.episodes.length" class="row">
+
+  <div class="saisons col-xs-12 col-sm-12 col-md-2">
     <p>Saisons : </p>
-    <span  class="list-group-item btn btn-default" ng-repeat="episode in episodes  | orderBy:'seasonNumber' | groupBy:['seasonNumber']"
+    <span   class=" col-sm-3 col-md-12 col-xs-6  list-group-item btn btn-default" ng-repeat="episode in serie.episodes  | orderBy:'seasonNumber' | groupBy:['seasonNumber']"
       ng-show="episode.group_by_CHANGED" ng-click="selectionSaison(episode.seasonNumber)">
         {{episode.seasonNumber}}
 
     </span>
   </div>
 
-  <div class="episodes col-md-10">
+  <div class="episodes col-sm-12 col-md-10 col-xs-12">
 
     <p>Episodes : </p>
-    <span  ng-repeat="episode in episodes | filter:filtreEpisode | orderBy:['seasonNumber', 'episodeNumber']">
+    <span  ng-repeat="episode in serie.episodes | filter:filtreEpisode | orderBy:['seasonNumber', 'episodeNumber']">
 
       <div class="row" ng-if="episode.magnet">
 
         <!--<span >-->
-        <a href="#/" class="col-md-10  list-group-item" ng-click="selectionEpisode(episode)">
+        <a href="#/" class=" col-sm-9 col-md-9 col-xs-12 list-group-item" ng-click="selectionEpisode(episode)">
             {{episode.seasonNumber}}x{{episode.episodeNumber}} : {{episode.title}}
         </a>
 
         <span >
-        <a class=" list-group-item col-md-1" href={{episode.magnet}} role="button">
-          <span class="glyphicon glyphicon-magnet" aria-hidden="true"></span>
-        </a>
+          <a class=" list-group-item col-md-1 col-sm-1 col-xs-3" href={{episode.magnet}} role="button">
+            <span class="glyphicon glyphicon-magnet" aria-hidden="true"></span>
+          </a>
+
+            <a ng-if="episode.info_url" class=" list-group-item col-md-1 col-sm-1 col-xs-3" href={{episode.info_url}} role="button">
+              <span  class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            </a>
+
+            <a  class=" list-group-item col-md-1 col-sm-1 col-xs-3"  href="{{serie.addicted_url}}/{{episode.seasonNumber}}/{{episode.episodeNumber}}/8" role="button">
+              <span  aria-hidden="true">srt</span>
+            </a>
+
+
       </span>
       </div>
 
